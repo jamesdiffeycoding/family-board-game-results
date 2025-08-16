@@ -1,9 +1,10 @@
 import { supabase } from "./../supabase-client";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Card from "./Card";
 
 export default function MatchHistory() {
-  const [matches, setMatches] = useState([]);
+  const [matches, setMatches] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -17,7 +18,7 @@ export default function MatchHistory() {
           tm_scores (
             id,
             points,
-            winner,
+            ranking,
             person:tm_people(name),
             corporation:tm_corporations(name)
           )
@@ -54,11 +55,16 @@ export default function MatchHistory() {
             match.tm_scores?.map((score) => (
               <tr key={score.id} className="hover:bg-gray-50">
                 <td className="border px-4 py-2">
-                  {new Date(match.occured_on).toLocaleDateString()}
+                  <Link
+                    to={`/matches/${match.id}`}
+                    className="text-blue-600 hover:underline"
+                  >
+                    {new Date(match.occured_on).toLocaleDateString()}
+                  </Link>
                 </td>
                 <td
                   className={`border px-4 py-2 ${
-                    score.winner ? "bg-green-100 font-semibold" : ""
+                    score.ranking === 1 ? "bg-green-100 font-semibold" : ""
                   }`}
                 >
                   {score.person?.name || "Unknown Player"}
@@ -68,7 +74,7 @@ export default function MatchHistory() {
                 </td>
                 <td
                   className={`border px-4 py-2 ${
-                    score.winner ? "bg-green-100 font-semibold" : ""
+                    score.ranking === 1 ? "bg-green-100 font-semibold" : ""
                   }`}
                 >
                   {score.points}

@@ -15,7 +15,7 @@ export default function PlayerStats() {
           id,
           match_id,
           points,
-          winner
+          ranking
         )
       `);
 
@@ -24,7 +24,7 @@ export default function PlayerStats() {
       } else {
         const dataWithStats = data.map((player) => {
           const totalWins =
-            player.tm_scores?.filter((s) => s.winner).length || 0;
+            player.tm_scores?.filter((s) => s.ranking == 1).length || 0;
           const gamesPlayed = player.tm_scores?.length || 0;
 
           return {
