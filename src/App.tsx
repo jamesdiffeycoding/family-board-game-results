@@ -2,40 +2,58 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Link,
   Navigate,
 } from "react-router-dom";
-import PlayerStats from "./components/PlayerStats";
-import MatchHistory from "./components/MatchHistory";
-import Corporations from "./components/Corporations";
-import CorporationInfo from "./components/CorporationInfo";
-import MatchInfo from "./components/MatchInfo";
+import JLink from "./components/JLink";
+import PlayerStats from "./pages/PlayerStats";
+import MatchHistory from "./pages/MatchHistory";
+import Corporations from "./pages/Corporations";
+import CorporationInfo from "./pages/CorporationInfo";
+import PlayerInfo from "./pages/PlayerInfo";
+import MatchInfo from "./pages/MatchInfo";
 import "./App.css";
 
 function App() {
   return (
     <Router>
       <nav className="p-4 bg-gray-100 space-x-4">
-        <Link to="/">Match History</Link>
-        <Link to="/players">Players</Link>
-        <Link to="/corporations/all">Corporations</Link>
+        <JLink variant="nav" to="/">
+          Match History
+        </JLink>
+        <JLink variant="nav" to="/players/all">
+          Players
+        </JLink>
+        <JLink variant="nav" to="/corporations/all">
+          Corporations
+        </JLink>
       </nav>
 
       <div className="p-4">
         <Routes>
+          {/* Matches */}
           <Route path="/" element={<Navigate to="/matches/all" replace />} />
+          <Route
+            path="/matches"
+            element={<Navigate to="/matches/all" replace />}
+          />
           <Route path="/matches/all" element={<MatchHistory />} />
           <Route path="/matches/:matchId" element={<MatchInfo />} />
-          <Route path="/players" element={<PlayerStats />} />
+
+          {/* Players */}
+          <Route
+            path="/players"
+            element={<Navigate to="/players/all" replace />}
+          />
+          <Route path="/players/all" element={<PlayerStats />} />
+          <Route path="/players/:playerId" element={<PlayerInfo />} />
+
+          {/* Corporations */}
           <Route
             path="/corporations"
             element={<Navigate to="/corporations/all" replace />}
           />
           <Route path="/corporations/all" element={<Corporations />} />
-          <Route
-            path="/corporations/:corpNameLower"
-            element={<CorporationInfo />}
-          />
+          <Route path="/corporations/:corpId" element={<CorporationInfo />} />
         </Routes>
       </div>
     </Router>

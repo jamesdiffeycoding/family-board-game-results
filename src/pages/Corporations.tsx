@@ -1,8 +1,15 @@
-import { supabase } from "./../supabase-client";
+import { supabase } from "../supabase-client";
 import { useEffect, useState } from "react";
-import Card from "./Card";
-import { Link } from "react-router-dom";
-
+import Card from "../components/Card";
+import JLink from "../components/JLink";
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from "../components/ui/table";
 interface Corporation {
   id: number;
   name: string;
@@ -66,43 +73,40 @@ export default function Corporations() {
 
   return (
     <Card title="Corporations Stats">
-      <table className="min-w-full border border-gray-300">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="border px-4 py-2 text-left">Corporation</th>
-            <th className="border px-4 py-2 text-left">Pack</th>
-            <th className="border px-4 py-2 text-left">Games Played</th>
-            <th className="border px-4 py-2 text-left">Wins</th>
-            <th className="border px-4 py-2 text-left">Win %</th>
-          </tr>
-        </thead>
-        <tbody>
+      <Table className="min-w-full border border-gray-300">
+        <TableHeader className="bg-gray-100">
+          <TableRow>
+            <TableHead>Corporation</TableHead>
+            <TableHead>Pack</TableHead>
+            <TableHead>Games Played</TableHead>
+            <TableHead>Wins</TableHead>
+            <TableHead>Win %</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {corporations.map((corp) => (
-            <tr key={corp.id} className="hover:bg-gray-50">
-              <td className="border px-4 py-2">
-                <Link
-                  to={`/corporations/${encodeURIComponent(
-                    corp.name.toLowerCase()
-                  )}`}
-                  className="text-blue-600 hover:underline"
+            <TableRow key={corp.id} className="hover:bg-gray-50">
+              <TableCell>
+                <JLink
+                  variant="default"
+                  to={`/corporations/${corp.id}`}
+                  className="p-2 bg-blue-200 hover:bg-blue-300 rounded"
                 >
                   {corp.name}
-                </Link>
-              </td>
-              <td className="border px-4 py-2">
+                </JLink>
+              </TableCell>
+              <TableCell>
                 {corp.pack?.name || (
                   <span className="text-gray-500">No pack</span>
                 )}
-              </td>
-              <td className="border px-4 py-2">{corp.gamesPlayed}</td>
-              <td className="border px-4 py-2">{corp.wins}</td>
-              <td className="border px-4 py-2">
-                {corp.winPercent.toFixed(1)}%
-              </td>
-            </tr>
+              </TableCell>
+              <TableCell>{corp.gamesPlayed}</TableCell>
+              <TableCell>{corp.wins}</TableCell>
+              <TableCell>{corp.winPercent.toFixed(1)}%</TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </Card>
   );
 }

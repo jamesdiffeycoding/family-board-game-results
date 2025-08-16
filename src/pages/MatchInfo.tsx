@@ -1,7 +1,16 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "../supabase-client";
-
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from "../components/ui/table";
+import JLink from "../components/JLink";
+import { Star } from "lucide-react";
 interface Person {
   name: string;
 }
@@ -12,7 +21,7 @@ interface ScoreDisplay {
   person?: Person;
   points: number;
   ranking: number;
-  blackCubes: number;
+  karma: number;
 }
 
 export default function MatchInfo() {
@@ -34,10 +43,10 @@ export default function MatchInfo() {
           scores:tm_scores(
             points,
             ranking,
-            black_cubes_left,
+            karma:black_cubes_left,
             person_id,
             person:tm_people(name),
-            corporation:tm_corporations(name)
+            corporation:tm_corporations(id, name)
           )
         `
         )
@@ -52,11 +61,12 @@ export default function MatchInfo() {
 
         const scoreList: ScoreDisplay[] = data.scores.map((s: any) => ({
           corporation: s.corporation.name,
+          corpId: s.corporation.id,
           personId: s.person_id,
           person: s.person,
           points: s.points,
           ranking: s.ranking,
-          blackCubes: s.black_cubes_left,
+          karma: s.karma,
         }));
 
         setScores(scoreList);
@@ -69,6 +79,7 @@ export default function MatchInfo() {
   }, [matchId]);
 
   if (loading) return <p>Loading match data...</p>;
+  console.log(scores);
 
   return (
     <div>
@@ -78,37 +89,50 @@ export default function MatchInfo() {
       {scores.length === 0 ? (
         <p>No scores found for this match.</p>
       ) : (
-        <table className="min-w-full border border-gray-300">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="border px-4 py-2">Corporation</th>
-              <th className="border px-4 py-2">Person Name</th>
-              <th className="border px-4 py-2">Points</th>
-              <th className="border px-4 py-2">Rank</th>
-              <th className="border px-4 py-2">Black Cubes Left</th>
-            </tr>
-          </thead>
-          <tbody>
+        <Table className="min-w-full border border-gray-300">
+          <TableHeader className="bg-gray-100">
+            <TableRow>
+              <TableHead>Corporation</TableHead>
+              <TableHead>Person Name</TableHead>
+              <TableHead>Points</TableHead>
+              <TableHead>Rank</TableHead>
+              <TableHead>Karma</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {scores.map((s, idx) => (
-              <tr
+              <TableRow
                 key={idx}
-                className={`border px-4 py-2 ${
+                className={`px-4 py-2 ${
                   s.ranking === 1
                     ? "bg-green-200 font-bold"
                     : "hover:bg-gray-50"
                 }`}
               >
-                <td className="border px-4 py-2">{s.corporation}</td>
-                <td className="border px-4 py-2">
-                  {s.person?.name || "Unknown"}
-                </td>
-                <td className="border px-4 py-2">{s.points}</td>
-                <td className="border px-4 py-2">{s.ranking}</td>
-                <td className="border px-4 py-2">{s.blackCubes}</td>
-              </tr>
+                <TableCell>
+                  {" "}
+                  <JLink variant="default" to={`/corporations/${s.corpId}`}>
+                    {s.corporation || "Unknown"}
+                  </JLink>
+                </TableCell>
+                <TableCell>
+                  <JLink variant="default" to={`/players/${s.personId}`}>
+                    {s.person?.name || "Unknown"}
+                  </JLink>
+                </TableCell>
+                <TableCell>{s.points}</TableCell>
+                <TableCell>{s.ranking}</TableCell>
+                <TableCell>
+                  <div className="flex space-x-1">
+                    {Array.from({ length: s.karma }).map((_, i) => (
+                      <Star key={i} className="w-5 h-5 text-black" />
+                    ))}
+                  </div>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       )}
     </div>
   );
