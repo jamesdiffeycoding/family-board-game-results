@@ -11,12 +11,16 @@ import Corporations from "./pages/Corporations";
 import CorporationInfo from "./pages/CorporationInfo";
 import PlayerInfo from "./pages/PlayerInfo";
 import MatchInfo from "./pages/MatchInfo";
+import NewMatch from "./pages/NewMatch";
 import "./App.css";
 
 function App() {
   return (
     <Router>
       <nav className="p-4 bg-gray-100 space-x-4">
+        <JLink variant="nav" to="/new">
+          New Match
+        </JLink>
         <JLink variant="nav" to="/">
           Match History
         </JLink>
@@ -30,6 +34,8 @@ function App() {
 
       <div className="p-4">
         <Routes>
+          {/* New */}
+          <Route path="/new" element={<NewMatch />} />
           {/* Matches */}
           <Route path="/" element={<Navigate to="/matches/all" replace />} />
           <Route
